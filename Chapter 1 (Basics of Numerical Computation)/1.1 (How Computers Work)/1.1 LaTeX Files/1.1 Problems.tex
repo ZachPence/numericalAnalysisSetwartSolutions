@@ -1,0 +1,164 @@
+\documentclass{article}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage[shortlabels]{enumitem}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{mathrsfs}
+\usepackage{algpseudocode}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+% Custom Environments
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[subsection]
+
+% Convience Functions
+\newcommand{\courier}[1]{{\fontfamily{pcr}\selectfont#1}}
+
+% Geometry and Formatting
+\doublespacing
+\renewcommand{\qedsymbol}{\(\blacksquare\)}
+\pagenumbering{gobble}
+
+\begin{document}
+	\setcounter{section}{1}
+	\setcounter{subsection}{1}
+	
+	% 1
+	\setcounter{problem}{0}
+	\begin{problem}
+		Write code for multiplying a pair of \(n \times n\) matrices \((C\gets AB)\):
+		\begin{figure*}[h!]
+			\centering
+			\begin{algorithmic}
+				\For{\(i = 1,2,\ldots,n\)}
+				\For{\(j = 1,2,\ldots,n\)}
+				\State \(c_{ij}\gets 0\)
+				\For{\(k = 1,2,\ldots,n\)}
+				\State \(c_{ij}\gets c_{ij} + a_{ik}b_{kj}\)
+				\EndFor
+				\EndFor
+				\EndFor
+			\end{algorithmic}
+		\end{figure*}
+	
+		\noindent Do this in your favorite interpreted language (MATLAB, Python, Ruby, \(\cdots\)). Use your code for multiplying a pair of \(100\times 100\) matrices. If your language has a built-in operation for performing matrix multiplication, use this to compute the matrix product of your test matrices. How much faster is the built-in operation?
+	\end{problem}
+	
+	% 2
+	\newpage
+	\setcounter{problem}{1}
+	\begin{problem}
+		The matrix operation \(C\gets C + AB\) on \(n\times n\) matrices can be written as three nested loops:
+		\begin{figure*}[h!]
+			\centering
+			\begin{algorithmic}
+				\For{\(i = 1,2,\ldots,n\)}
+				\For{\(j = 1,2,\ldots,n\)}
+				\For{\(k = 1,2,\ldots,n\)}
+				\State \(c_{ij}\gets c_{ij} + a_{ik}b_{kj}\)
+				\EndFor
+				\EndFor
+				\EndFor
+			\end{algorithmic}
+		\end{figure*}
+	The order of the loops can be changed; in fact, any order of ``\courier{for i}'', ``\courier{for j}'', and ``\courier{for k}'' can be used giving a total of \(3!=6\) possible orderings. In a \textit{compiled language} (such as Fortran, C/C++, Java, or Julia), time the six possible orderings. Which one is faster. Can you explain why?
+	\end{problem}
+	
+	% 3
+	\newpage
+	\setcounter{problem}{2}
+	\begin{problem}
+		A rule of thumb for high-performance computing is that when a data item is read
+		in, we should use it as much as possible, rather than re-reading that data item
+		many times and doing a little computing on it each time. In matrix multiplication, this can be achieved by subdividing each matrix into \(b\times b\) blocks. For \(n\times n\) matrices \(A\) and \(B\), we can let \(m = n/b\) and write:
+		\[
+		AB = \begin{pmatrix}
+			A_{11} & A_{12} & \cdots & A_{1m}\\
+			A_{21} & A_{22} & \cdots & A_{2m}\\
+			\vdots & \vdots & \ddots & \vdots\\
+			A_{m1} & A_{m2} & \cdots & A_{mm}\\
+		\end{pmatrix}
+		\begin{pmatrix}
+			B_{11} & B_{12} & \cdots & B_{1m}\\
+			B_{21} & B_{22} & \cdots & B_{2m}\\
+			\vdots & \vdots & \ddots & \vdots\\
+			B_{m1} & B_{m2} & \cdots & B_{mm}\\
+		\end{pmatrix}
+		=     
+		\begin{pmatrix}
+			C_{11} & C_{12} & \cdots & C_{1m}\\
+			C_{21} & C_{22} & \cdots & C_{2m}\\
+			\vdots & \vdots & \ddots & \vdots\\
+			C_{m1} & C_{m2} & \cdots & C_{mm}\\
+		\end{pmatrix}
+		= C
+		\]
+		Then for \(i,j=1,2,\ldots,n\), \(C_{ij}\gets \sum_{k=1}^m A_{ik}B_{kj}\). As long as we can keep all of \(A_{ik}\), \(B_{kj}\), and \(C_{ij}\) in cache memory at once, the update \(C_{ij} \gets C_{ij} + A_{ik}B_{kj}\) can be done without any memory transfers once \(A_{ik}\) and \(B_{kj}\) have been loaded
+		into memory. Write out a blocked version of the matrix multiplication algorithm
+		and count the number of memory transfers with the blocked and original matrix
+		multiplication algorithms.
+	\end{problem}
+	
+	% 4
+	\newpage
+	\setcounter{problem}{3}
+	\begin{problem}
+		Implement the original and unrolled inner product algorithms in Algorithm \(1.1.3\) as a function in your favorite programming language. Time the function for taking the product of two vectors of \(10^6\) entries. Use the simpler version to check the correctness of the unrolled version. Note that there may be differences due to roundoff error. Put the function call inside a loop to perform the inner product \(10^3\) times. Is there any difference in the times of the two algorithms? Note	that interpreted languages, such as Python and MATLAB, may see little or no difference in timings. This is probably due to the fact that the time savings for the unrolled version is negligible compared to the overhead of interpretation. Also, interpreted languages will typically ``box'' and ``unbox'' the raw floating point value, converting it to and from a data structure that contains information about the type of the object as well as the object itself.
+	\end{problem}
+	
+	% 5
+	\newpage
+	\setcounter{problem}{4}
+	\begin{problem}
+		The following pseudo-code is designed to provoke a ``stack overflow'' error:
+		\begin{figure*}[h!]
+			\centering 
+			\begin{algorithmic}
+				\Function{overflow}{n}
+					\If{\(n=2^k\) for some \(k\)}
+						\State \courier{print(\(n\))}
+					\EndIf
+					\State \courier{OVERFLOW(\(n+1\))}
+				\EndFunction
+			\end{algorithmic}
+		\end{figure*}
+	
+	
+	\noindent Implement in your favorite programming language. How does it behave on your
+	computer? How large a value of \(n\) is printed out before overflow occurs?
+	\end{problem}
+	
+	% 6
+	\newpage
+	\setcounter{problem}{5}
+	\begin{problem}
+		Dynamic memory allocation is memory allocation that occurs at run-time. It is
+		an essential in all modern computational systems. Pick a programming language.
+		How does this language allocate memory or objects? Do you need to explicitly
+		de-allocate memory or objects in your programming language? How is this done?
+	\end{problem}
+	
+	% 7
+	\newpage
+	\setcounter{problem}{6}
+	\begin{problem}
+		There are different ways of automatically de-allocating unusable objects (\textit{garbage collection}) in programming systems. In this exercise, we look at two of them. Describe reference counted garbage collection and ``mark and sweep'' garbage collection. What are their strengths and weaknesses?
+	\end{problem}
+	
+	% 8
+	\newpage
+	\setcounter{problem}{7}
+	\begin{problem}
+		\textit{Memory leaks} are a kind of bug that can be hard to find and remove. These arise when memory is allocated for objects that are never de-allocated, and so eventually take up all available memory. Even if a system has garbage collection, this can still occur. Explain how this might happen.
+	\end{problem}
+	
+	% 9
+	\newpage
+	\setcounter{problem}{8}
+	\begin{problem}
+		Memory allocation and de-allocation can lead to fragmentation of the memory
+		allocation system over time, so that there may be a great deal of memory available, but no large object can be allocated because the available memory is fragmented into small pieces. Read about and describe the SmallTalk double indirection scheme that allows SmallTalk to de-fragment the memory allocation system.
+	\end{problem}
+\end{document}
