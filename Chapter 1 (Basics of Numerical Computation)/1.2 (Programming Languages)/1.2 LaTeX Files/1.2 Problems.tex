@@ -1,0 +1,107 @@
+\documentclass{article}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage[shortlabels]{enumitem}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{mathrsfs}
+\usepackage{algpseudocode}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+% Custom Environments
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[subsection]
+
+% Convience Functions
+\newcommand{\courier}[1]{{\fontfamily{pcr}\selectfont#1}}
+
+% Geometry and Formatting
+\doublespacing
+\renewcommand{\qedsymbol}{\(\blacksquare\)}
+\pagenumbering{gobble}
+
+\begin{document}
+	\setcounter{section}{1}
+	\setcounter{subsection}{2}
+	
+	% 1
+	\setcounter{problem}{0}
+	\begin{problem}
+	Pick your favorite programming language. Is it interpreted? Is it compiled? What
+	is (or are) the data type(s) for floating point numbers? Is there a built-in data
+	type for vectors or matrices? Can the vectors (or matrices) be added? Can they
+	be multiplied?
+	\end{problem}
+	
+	% 2
+	\newpage
+	\setcounter{problem}{1}
+	\begin{problem}
+	What facilities are included in your favorite programming language for parallel
+	programming? Are there libraries that provide these facilities? Is it possible
+	to perform both shared memory and distributed memory computing in your
+	language? With these libraries?
+	\end{problem}
+	
+	% 3
+	\newpage
+	\setcounter{problem}{2}
+	\begin{problem}
+		Is your favorite programming language garbage collected? That is, is there automatic de-allocation of unusable objects? What are the advantages and disadvantages
+		of garbage collection?
+	\end{problem}
+	
+	% 4
+	\newpage
+	\setcounter{problem}{3}
+	\begin{problem}
+		The following function applies the function \(f\) to each item of a vector of items. Implement it in your favorite programming language.
+		\begin{figure*}[h!]
+			\begin{algorithmic}
+				\Function{map}{f, x}
+				\State \(y \gets \)\courier{ new array the same size as }\(x\)
+				\For{\(i\) \courier{an index of }\(x\)}
+					\State \(y_i\gets f(x_i)\)
+				\EndFor
+				\EndFunction
+			\end{algorithmic}
+		\end{figure*}
+	
+	
+		Now implement it in your least favorite, or a previously unknown, programming
+		language.
+	\end{problem}
+	
+	% 5
+	\newpage
+	\setcounter{problem}{4}
+	\begin{problem}
+	Macros are pieces of code that \textit{transform other pieces of code} before compilation or execution. Does your favorite programming language have macros? What
+	kinds of transformations can themacros in that language perform? If your favorite
+	programming language does not have macros, or you discover another language
+	that does have macros (such as Lisp or Julia), describe the macro facilities of
+	that language.
+	\end{problem}
+	
+	% 6
+	\newpage
+	\setcounter{problem}{5}
+	\begin{problem}
+	The C programming language was developed for implementing the Unix operating
+	system. This led to many design decisions by the creators of the language,
+	such as pointer arithmetic, and lack of array bounds. Explain why these decisions
+	may have been necessary for their purpose at that time, and if you think those
+	decisions help or hinder the creation of mathematical software now.
+	\end{problem}
+	
+	% 7
+	\newpage
+	\setcounter{problem}{6}
+	\begin{problem}
+		Some languages are stack languages, such as Forth, Joy, and PostScript. Arguments
+		for a “function” in a stack language do not have names, but the \(k-th\) input
+		is the \(k-th\) item from the top of the stack. Download one of these languages and implement the “map” function of Problem 1.2.4 in that language.
+	\end{problem}
+	
+\end{document}
