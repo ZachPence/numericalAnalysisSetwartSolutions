@@ -5,6 +5,8 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{setspace}
 \usepackage{mathrsfs}
+\usepackage{listings}
+\usepackage{xcolor}
 \usepackage{algpseudocode}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
@@ -20,6 +22,33 @@
 \doublespacing
 \renewcommand{\qedsymbol}{\(\blacksquare\)}
 \pagenumbering{gobble}
+
+% Formatting taken from the Overleaf page on the lstlisting package:
+% https://www.overleaf.com/learn/latex/Code_listing
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+\lstset{style=mystyle}
 
 \begin{document}
 	\setcounter{section}{1}
@@ -45,7 +74,187 @@
 	
 		\noindent Do this in your favorite interpreted language (MATLAB, Python, Ruby, \(\cdots\)). Use your code for multiplying a pair of \(100\times 100\) matrices. If your language has a built-in operation for performing matrix multiplication, use this to compute the matrix product of your test matrices. How much faster is the built-in operation?
 	\end{problem}
+	\begin{proof}[Solution]\(\\\)
+		Python will be the interpreted language of choice. Moreover, I wanted to generalize the function to allow for non-square matrices. The working code is available in \textit{1.1.1 Code.py}; hoIver, the code will also be listed below. 
+		\begin{lstlisting}[language=Python, breaklines]
+def matrix_multiply(A: List[List[float]], B: List[List[float]]) -> List[List[float]]:
+"""
+Performs matrix multiplication using base Python. I also generalize it a bit
+further than what Problem 1.1.1 asks of us. I allow for rectangular matrices
+(not just square). This function will assume each input is not jagged. 
+
+Parameters
+----------
+A: List[List[float]]
+An n x m matrix
+
+B: List[List[float]]
+An m x p matrix
+
+Returns
+-------
+A: List[List[float]]
+An n x p matrix
+
+Raises
+------
+ValueError
+If the dimensions are in valid. That is, when the width of matrix A does
+not match the length of B
+"""   
+
+WIDTH_A = len(A[0])
+LENGTH_B = len(B)
+
+# Verify dimension are correct
+if WIDTH_A != LENGTH_B:
+	raise ValueError("Invalid dimensions.")
+
+# Start multiplication
+n = len(A) # length of output matrix
+p = len(B[0]) # width of output matrix
+
+
+C = [[0 for _ in range(p)] for _ in range(n)]
+for i in range(n):
+	for j in range(p):
+		for k in range(min(n, p)):
+			C[i][j] += A[i][k]*B[k][j]
+return C
+		\end{lstlisting}
+		
+		To verify the implementation was correct, I inputted the following matrices for \(A\) and \(B\) and computed \(C = AB\):
+		
+		
+		\begin{align*}
+			A=
+			\left(\begin{array}{cc}
+				1&2\\
+				3&4\\
+			\end{array}\right)
+			,~
+			B=
+			\left(\begin{array}{cc}
+				1&2\\
+				3&4\\
+			\end{array}\right)
+			,&~
+			C=
+			\left(\begin{array}{cc}
+				7&10\\
+				15&22\\
+			\end{array}\right)
+			\\
+			A=
+			\left(\begin{array}{cc}
+				1&2\\
+				3&4\\
+			5&6\\		
+			\end{array}\right)
+			,~
+			B=
+			\left(\begin{array}{cc}
+				1&2\\
+				3&4\\
+			\end{array}\right)
+			,&~
+			C=
+			\left(\begin{array}{cc}
+				7&10\\
+				15&22\\
+				23&34\\
+			\end{array}\right)
+			\\
+			A=
+			\left(\begin{array}{cc}
+				1&2\\
+				3&4\\
+			\end{array}\right)
+			,~
+			B=
+			\left(\begin{array}{ccc}
+				1&2&5\\
+				3&4&6\\
+			\end{array}\right)
+			,&~
+			C=
+			\left(\begin{array}{ccc}
+				7&10&17\\
+				15&22&39\\
+			\end{array}\right)
+			\\
+			A=
+			\left(\begin{array}{cc}
+				1&0\\
+				0&1\\
+			\end{array}\right)
+			,~
+			B=
+			\left(\begin{array}{cc}
+				1&2\\
+				3&4\\
+			\end{array}\right)
+			,&~
+			C=
+			\left(\begin{array}{cc}
+				1&2\\
+				3&4\\
+			\end{array}\right)
+			\end{align*}
+			\begin{align*}
+			A=
+			\left(\begin{array}{cccc}
+				1&2&3&4\\
+				5&6&7&8\\
+				9&10&11&12\\
+				13&14&15&16\\
+			\end{array}\right)
+			,~
+			B=
+			\left(\begin{array}{cccc}
+				16&15&14&13\\
+				12&11&10&9\\
+				8&7&6&5\\
+				4&3&2&1\\
+			\end{array}\right)
+			,&~
+			C=
+			\left(\begin{array}{cccc}
+				80&70&60&50\\
+				240&214&188&162\\
+				400&358&316&274\\
+				560&502&444&386\\
+			\end{array}\right)
+			\\
+			A=
+			\left(\begin{array}{cccc}
+				0&-1&0&-0.5\\
+				12&11&10&9\\
+				8&7&6&5\\
+				4&3&2&1\\
+			\end{array}\right)
+			,~
+			B=
+			\left(\begin{array}{cccc}
+				1&2&3&4\\
+				0&-1&-0.5&0\\
+				9&10&11&12\\
+				13&14&15&16\\
+			\end{array}\right)
+			,&~
+			C=
+			\left(\begin{array}{cccc}
+				-6.5&-6.0&-7.0&-8.0\\
+				219&239&275.5&312\\
+				127&139&161.5&184\\
+				35&39&47.5&56\\
+			\end{array}\right)
+			\\
+		\end{align*}
+	For the ``built-in'' matrix multiplication, I will be using the matrix multiplication feature in NumPy. To test to see if there is a speed up, two \(100\times 100\) matrices were generated at random where each entry is an integer from 0 to 100; The matrices I used are in the \textit{1.1.1} Folder in \textit{1.1 Code and Data}. For the function I implemented, the operation was performed 100 times and the execution times for each trial were recorded. This was repeated for the multiplication built into NumPy. The execution times and the code used to calculate the execution times can be found in the \textit{1.1.1} Folder. 
 	
+	I found that my implementation had a mean execution time of 0.537128028869629 seconds while using NumPy had a mean execution time of \(9.753704071044921\times 10^{-6}\) seconds. That is a \(99.99818410070843\%\) speedup compared to our implementation. 
+	\end{proof}
 	% 2
 	\newpage
 	\setcounter{problem}{1}
@@ -71,8 +280,8 @@
 	\setcounter{problem}{2}
 	\begin{problem}
 		A rule of thumb for high-performance computing is that when a data item is read
-		in, we should use it as much as possible, rather than re-reading that data item
-		many times and doing a little computing on it each time. In matrix multiplication, this can be achieved by subdividing each matrix into \(b\times b\) blocks. For \(n\times n\) matrices \(A\) and \(B\), we can let \(m = n/b\) and write:
+		in, UC should use it as much as possible, rather than re-reading that data item
+		many times and doing a little computing on it each time. In matrix multiplication, this can be achieved by subdividing each matrix into \(b\times b\) blocks. For \(n\times n\) matrices \(A\) and \(B\), UC can let \(m = n/b\) and write:
 		\[
 		AB = \begin{pmatrix}
 			A_{11} & A_{12} & \cdots & A_{1m}\\
@@ -95,7 +304,7 @@
 		\end{pmatrix}
 		= C
 		\]
-		Then for \(i,j=1,2,\ldots,n\), \(C_{ij}\gets \sum_{k=1}^m A_{ik}B_{kj}\). As long as we can keep all of \(A_{ik}\), \(B_{kj}\), and \(C_{ij}\) in cache memory at once, the update \(C_{ij} \gets C_{ij} + A_{ik}B_{kj}\) can be done without any memory transfers once \(A_{ik}\) and \(B_{kj}\) have been loaded
+		Then for \(i,j=1,2,\ldots,n\), \(C_{ij}\gets \sum_{k=1}^m A_{ik}B_{kj}\). As long as UC can keep all of \(A_{ik}\), \(B_{kj}\), and \(C_{ij}\) in cache memory at once, the update \(C_{ij} \gets C_{ij} + A_{ik}B_{kj}\) can be done without any memory transfers once \(A_{ik}\) and \(B_{kj}\) have been loaded
 		into memory. Write out a blocked version of the matrix multiplication algorithm
 		and count the number of memory transfers with the blocked and original matrix
 		multiplication algorithms.
@@ -105,7 +314,7 @@
 	\newpage
 	\setcounter{problem}{3}
 	\begin{problem}
-		Implement the original and unrolled inner product algorithms in Algorithm \(1.1.3\) as a function in your favorite programming language. Time the function for taking the product of two vectors of \(10^6\) entries. Use the simpler version to check the correctness of the unrolled version. Note that there may be differences due to roundoff error. Put the function call inside a loop to perform the inner product \(10^3\) times. Is there any difference in the times of the two algorithms? Note	that interpreted languages, such as Python and MATLAB, may see little or no difference in timings. This is probably due to the fact that the time savings for the unrolled version is negligible compared to the overhead of interpretation. Also, interpreted languages will typically ``box'' and ``unbox'' the raw floating point value, converting it to and from a data structure that contains information about the type of the object as well as the object itself.
+		Implement the original and unrolled inner product algorithms in Algorithm \(1.1.3\) as a function in your favorite programming language. Time the function for taking the product of two vectors of \(10^6\) entries. Use the simpler version to check the correctness of the unrolled version. Note that there may be differences due to roundoff error. Put the function call inside a loop to perform the inner product \(10^3\) times. Is there any difference in the times of the two algorithms? Note	that interpreted languages, such as Python and MATLAB, may see little or no difference in timings. This is probably due to the fact that the time savings for the unrolled version is negligible compared to the overhead of interpretation. Also, interpreted languages will typically ``box'' and ``unbox'' the raw floating point value, converting it to and from a data structure that contains information about the type of the object as UCll as the object itself.
 	\end{problem}
 	
 	% 5
@@ -144,7 +353,7 @@
 	\newpage
 	\setcounter{problem}{6}
 	\begin{problem}
-		There are different ways of automatically de-allocating unusable objects (\textit{garbage collection}) in programming systems. In this exercise, we look at two of them. Describe reference counted garbage collection and ``mark and sweep'' garbage collection. What are their strengths and weaknesses?
+		There are different ways of automatically de-allocating unusable objects (\textit{garbage collection}) in programming systems. In this exercise, UC look at two of them. Describe reference counted garbage collection and ``mark and sUCep'' garbage collection. What are their strengths and UCaknesses?
 	\end{problem}
 	
 	% 8
