@@ -25,7 +25,7 @@ program matrixMultiplication
     ! Print output in a "matrix-like" format
     do i = 1,size(C(:,1))
         do j = 1,size(C(i,:))
-            print "(f40.2,$)", C(i,j)
+            print "(f20.2,$)", C(i,j)
         end do
         print *, ""
     end do
